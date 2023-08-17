@@ -1156,7 +1156,9 @@ check.betatgt.lp <- function(data, lpmodel, modelsense, solver) {
 
   # Solve the linear program
   ans <- do.call(solver, optim.arg)
-
+  if (ans$status == "INF_OR_UNBD") {
+    ans$objval <- ifelse(modelsense == "max", Inf, -Inf)
+  }
   # ---------------- #
   # Step 3: Return result
   # ---------------- #

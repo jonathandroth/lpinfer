@@ -807,6 +807,9 @@ fsst.weight.matrix <- function(weight.matrix, beta.obs.hat, beta.sigma) {
    if (weight.matrix == "identity") {
       weight.mat <- diag(nrow(asmat(beta.obs.hat)))
    } else if (weight.matrix == "diag") {
+     if (min(eigen(beta.sigma)$values) < 1e-08) {
+       beta.sigma <- beta.sigma + 1e-06 * diag(nrow(beta.sigma))
+     }
       weight.mat <- diag(diag(solve(beta.sigma)))
    } else if (weight.matrix == "avar") {
       weight.mat <- solve(beta.sigma)
