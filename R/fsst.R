@@ -803,16 +803,21 @@ fsst.weight.matrix <- function(weight.matrix, beta.obs.hat, beta.sigma) {
 
    # ---------------- #
    # Step 2: Create the matrix
-   # ---------------- #
-   if (weight.matrix == "identity") {
-      weight.mat <- diag(nrow(asmat(beta.obs.hat)))
-   } else if (weight.matrix == "diag") {
-      weight.mat <- 1/diag(diag(beta.sigma))
-   } else if (weight.matrix == "avar") {
-      weight.mat <- solve(beta.sigma)
-   } else {
-      stop("'weight.matrix' has to be one of 'avar', 'diag' and 'identity'.")
-   }
+  # ---------------- #
+  if (weight.matrix == "identity") {
+    weight.mat <- diag(nrow(asmat(beta.obs.hat)))
+  } else if (weight.matrix == "diag") {
+    if (min(eigen(beta.sigma)$values) < 1e-8) {
+      beta.sigma <- beta.sigma + 1e-6 * diag(nrow(beta.sigma))
+    }
+    weight.mat <- diag(diag(solve(beta.sigma)))     
+  } else if (weight.matrix == "diag2") {
+    weight.mat <- 1/diag(diag(beta.sigma))
+  } else if (weight.matrix == "avar") {
+    weight.mat <- solve(beta.sigma)
+  } else {
+    stop("'weight.matrix' has to be one of 'avar', 'diag' and 'identity'.")
+  }
 
    return(weight.mat)
 }
