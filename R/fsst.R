@@ -818,7 +818,7 @@ fsst.weight.matrix <- function(weight.matrix, beta.obs.hat, beta.sigma) {
     }
     weight.mat <- diag(diag(solve(beta.sigma)))     
   } else if (weight.matrix == "diag2") {
-    weight.mat <- 1/diag(diag(beta.sigma))
+    weight.mat <- diag( 1/base::pmax(diag(beta.sigma),10^(-6)) )
   } else if (weight.matrix == "avar") {
     weight.mat <- solve(beta.sigma)
   } else {
